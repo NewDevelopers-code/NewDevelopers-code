@@ -37,7 +37,7 @@ function submitForm() {
     var lname = document.getElementById('lname').value;
     var password = document.getElementById('password').value;
 
-    fetch('https://script.google.com/macros/s/AKfycbyajdxcL_dzqPvUgmMYhiWDL2vFK1fpJrKnQjO4jPEap9Ynog-Ka1r1zeoAcHl9FIve/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbyhkWdsQM6eqv8FY4MQwaMl1VB3SmguyQn85E5Mq9Ay8a3ksyxEwuXIrwuv2hg84D86/exec', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

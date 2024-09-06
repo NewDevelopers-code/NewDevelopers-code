@@ -16,17 +16,21 @@
             <p>ยินดีต้อนรับสู่ระบบบันทึกเวลาทำงาน</p>            
         </div>
         <div class="container-form">
-            <form id="dataForm">
-                <label for="UserId">ID</label>
-                <input type="text" id="UserId" name="UserId" value="userId" readonly>
-                <label for="fname">ชื่อ</label>
-                <input type="text" id="fname" name="fname">
-                <label for="lname">นามสกุล</label>
-                <input type="text" id="lname" name="lname">
-                <label for="password">รหัสผ่าน</label>
-                <input type="password" id="password" name="password" >
-                <input type="submit" value="Submit">
-            </form>
+                <form id="myForm">
+                    <label for="UserId">ID</label>
+                    <input type="text" id="UserId" name="UserId" value="userId" readonly><br><br>
+                
+                    <label for="fname">ชื่อ</label>
+                    <input type="text" id="fname" name="fname"><br><br>
+                
+                    <label for="lname">นามสกุล</label>
+                    <input type="text" id="lname" name="lname"><br><br>
+                
+                    <label for="password">รหัสผ่าน</label>
+                    <input type="password" id="password" name="password"><br><br>
+                
+                    <input type="button" value="Submit" onclick="submitForm()">
+                </form>
         </div>       
     </div>
     <script src="./sign_up.js"></script>

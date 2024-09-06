@@ -31,26 +31,30 @@ function showContent() {
     }
 }
 
-// ฟังก์ชันสำหรับส่งฟอร์มไปยัง Google Apps Script
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwfWExmSXx2cxQmPhrrN9kW5gkqshakOGxX8bsINx4IR38qgHhN8_F03z8MLsa57mJF8w/exec'; // ใส่ URL ที่ได้จาก Google Apps Script
-const form = document.getElementById('dataForm');
+function submitForm() {
+    var userId = document.getElementById('UserId').value;
+    var fname = document.getElementById('fname').value;
+    var lname = document.getElementById('lname').value;
+    var password = document.getElementById('password').value;
 
-form.addEventListener('submit', e => {
-    e.preventDefault();
-
-    const formData = new FormData(form);
-    const data = {};
-    formData.forEach((value, key) => (data[key] = value));
-
-    // ส่งข้อมูลไปยัง Google Apps Script
-    fetch(scriptURL, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json',
-        },
+    fetch('https://script.google.com/macros/s/AKfycbyajdxcL_dzqPvUgmMYhiWDL2vFK1fpJrKnQjO4jPEap9Ynog-Ka1r1zeoAcHl9FIve/exec', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        UserId: userId,
+        fname: fname,
+        lname: lname,
+        password: password
+      })
     })
     .then(response => response.text())
-    .then(result => alert(result))
-    .catch(error => console.error('Error!', error.message));
-});
+    .then(data => {
+      alert(data); // แสดงข้อความตอบกลับ
+      document.getElementById('myForm').reset(); // ล้างฟอร์ม
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }

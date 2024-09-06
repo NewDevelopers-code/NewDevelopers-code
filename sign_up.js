@@ -6,11 +6,22 @@ liff.init({
     if (!liff.isLoggedIn()) {
         liff.login(); // ถ้ายังไม่ได้เข้าสู่ระบบ จะบังคับเข้าสู่การล็อกอิน
     } else {
-        showContent(); // ถ้าเข้าสู่ระบบแล้ว ให้แสดงเนื้อหาของหน้าเว็บ
+        getUserProfile(); // ถ้าเข้าสู่ระบบแล้ว ให้ดึงข้อมูลผู้ใช้
     }
 }).catch(err => console.error('LIFF initialization failed ', err));
 
-// แสดงเนื้อหาหลังจากล็อกอินแล้ว
+// ฟังก์ชันสำหรับดึงข้อมูลผู้ใช้
+function getUserProfile() {
+    liff.getProfile()
+        .then(profile => {
+            const userId = profile.userId; // ดึง userId จากโปรไฟล์
+            document.getElementById('UserId').value = userId; // นำค่า userId ใส่ในฟิลด์
+            showContent(); // แสดงฟอร์มเมื่อดึงข้อมูลสำเร็จ
+        })
+        .catch(err => console.error('Error getting profile: ', err));
+}
+
+// แสดงเนื้อหาหลังจากดึงข้อมูลสำเร็จ
 function showContent() {
     const contentSection = document.querySelector('.container');
     if (contentSection) {

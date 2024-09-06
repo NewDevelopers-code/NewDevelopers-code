@@ -1,0 +1,38 @@
+// เริ่มต้นการทำงานของ LIFF
+liff.init({
+    liffId: "YOUR_LIFF_ID" // ใส่ LIFF ID ของคุณ
+}).then(() => {
+    // ตรวจสอบว่าเข้าสู่ระบบหรือยัง
+    if (!liff.isLoggedIn()) {
+        liff.login(); // ถ้ายังไม่ได้เข้าสู่ระบบ จะบังคับเข้าสู่การล็อกอิน
+    } else {
+        showContent(); // ถ้าเข้าสู่ระบบแล้ว ให้แสดงเนื้อหาของหน้าเว็บ
+    }
+}).catch(err => console.error('LIFF initialization failed ', err));
+
+// แสดงเนื้อหาหลังจากล็อกอินแล้ว
+function showContent() {
+    document.getElementById('content-section').style.display = 'block';
+}
+
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwfWExmSXx2cxQmPhrrN9kW5gkqshakOGxX8bsINx4IR38qgHhN8_F03z8MLsa57mJF8w/exec'; // ใส่ URL ที่ได้จาก Google Apps Script
+const form = document.getElementById('dataForm');
+
+form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => (data[key] = value));
+
+        fetch(scriptURL, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            })
+        .then(response => response.text())
+        .then(result => alert(result))
+        .catch(error => console.error('Error!', error.message));
+    });

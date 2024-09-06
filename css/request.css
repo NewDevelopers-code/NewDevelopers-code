@@ -1,0 +1,119 @@
+/* Clear default CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f3f3f3;
+}
+
+.container {
+    width: 320px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 10px;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+.container2 {
+    width: 320px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 10px;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.header .time-btn {
+    background-color: #eee;
+    border: none;
+    border-radius: 15px;
+    padding: 5px 10px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.calendar-container {
+    height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin: 10px;
+    justify-content: center;
+}
+
+.button-group .btn {
+    z-index: 1;
+    width: 120px; /* กำหนดความกว้างของปุ่มทั้งหมด */
+}
+
+.footer {
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.yellow {
+    background-color: #ffeb3b;
+}
+
+.green {
+    background-color: #4caf50;
+}
+
+.red {
+    background-color: #f44336;
+}
+
+.blue {
+    background-color: #2196f3;
+}
+
+.grey {
+    background-color: grey;
+}
+
+
+.flatpickr-input {
+    display: flex;
+    gap: 10px;
+    width: 100px;
+    height: 40px;
+    border-radius: 20px;
+    text-align: center;
+    margin: 10px;
+    pointer-events: none;
+}

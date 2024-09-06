@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Interface</title>
+    <link rel="stylesheet" href="./css/request.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="time-btn">เวลาปัจจุบัน</button>
+        </div>
+        <div class="button-group">
+            <button class="btn yellow" id="leave-btn" data-action="leave-btn">ลากิจ</button>
+            <button class="btn green" id="sick-btn" data-action="sick-btn">ลาป่วย</button>
+        </div>
+        <div class="button-group">
+            <button class="btn red" id="home-btn" style="width: 100%;">กลับหน้าหลัก</button>
+        </div>
+    </div>
+    <div class="container2" style="display:none;">
+        <div class="header">
+            <button class="time-btn">เวลาปัจจุบัน</button>
+        </div>        
+        <div class="button-group">
+            <button class="btn yellow" id="date-from-btn">ตั้งแต่วันที่</button>
+            <button class="btn green" id="date-to-btn">ถึงวันที่</button>
+        </div>
+        <div class="calendar-container">
+            <!-- Calendar will be displayed here -->
+             <P>เป็นกี่วัน</P>
+        </div>
+        <div class="footer">
+            <button class="btn red" id="cancelButton">ยกเลิก</button>
+            <button class="btn blue" id="saveButton">บันทึก</button>
+        </div>
+    </div>     
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="./request.js"></script>      
+</body>
+</html>

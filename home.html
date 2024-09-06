@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Interface</title>
+    <link rel="stylesheet" href="./css/home.css">
+</head>
+<body>
+    <div class="container">
+        <div class="profile-image">IMAGE</div>
+        <div class="user-info">
+            <p>สวัสดีคุณ : ทิวากร</p>
+            <p>ID : 5904315</p>
+            <p>ตำแหน่ง : ส่งสินค้า</p>
+        </div>
+        <div class="button-group">
+            <button class="btn blue" id="check-in-btn" data-action="check-in">เข้างาน</button>
+            <button class="btn yellow" id="check-out-btn" data-action="check-out">ออกงาน</button>
+            <button class="btn green" id="leave-btn">บันทึกเวลา</button>
+            <button class="btn red">ปิดระบบ</button>
+        </div>
+    </div>
+    
+    <div class="container2" style="display:none;">
+        <div class="header">
+            <button class="time-btn">เวลาปัจจุบัน</button>
+        </div>
+        <div class="image-container">
+            <span id="placeholder-text">IMAGE</span>
+        </div>        
+        <div class="button-group">
+            <button class="btn yellow" onclick="openCamera()">เปิดกล้อง</button>
+            <button class="btn green" id="captureButton" onclick="captureImage()">ถ่ายรูป</button>
+            <button class="btn green" id="retakeButton" onclick="retakeImage()" style="display:none;">ถ่ายรูปใหม่</button>
+        </div>
+        <div class="footer">
+            <button class="btn red" id="cancelButton" >ยกเลิก</button>
+            <button class="btn blue" id="nextButton" onclick="showContainer3()">ถัดไป</button>
+        </div>
+    </div>
+    
+    <div class="container3" style="display:none;">
+        <div class="header">
+            <button class="time-btn">เวลาปัจจุบัน</button>
+        </div>
+        <div class="map-container">MAP</div>
+        <div class="button-group">
+            <button class="btn green" onclick="checkLocation()">เช็คตำแหน่ง</button>
+        </div>
+        <div class="footer">
+            <button class="btn red" id="cancelButtonMap" >ยกเลิก</button>
+            <button class="btn blue" id="saveButton">บันทึก</button>
+        </div>
+    </div>
+<script src="./home.js"></script>    
+</body>
+</html>

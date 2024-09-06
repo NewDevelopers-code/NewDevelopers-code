@@ -1,6 +1,6 @@
 // เริ่มต้นการทำงานของ LIFF
 liff.init({
-    liffId: "YOUR_LIFF_ID" // ใส่ LIFF ID ของคุณ
+    liffId: "2006013145-xKj494ap" // ใส่ LIFF ID ของคุณ
 }).then(() => {
     // ตรวจสอบว่าเข้าสู่ระบบหรือยัง
     if (!liff.isLoggedIn()) {

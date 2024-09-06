@@ -12,9 +12,15 @@ liff.init({
 
 // แสดงเนื้อหาหลังจากล็อกอินแล้ว
 function showContent() {
-    document.getElementById('content-section').style.display = 'block';
+    const contentSection = document.querySelector('.container');
+    if (contentSection) {
+        contentSection.style.display = 'block';
+    } else {
+        console.error('Content section not found');
+    }
 }
 
+// ฟังก์ชันสำหรับส่งฟอร์มไปยัง Google Apps Script
 const scriptURL = 'https://script.google.com/macros/s/AKfycbwfWExmSXx2cxQmPhrrN9kW5gkqshakOGxX8bsINx4IR38qgHhN8_F03z8MLsa57mJF8w/exec'; // ใส่ URL ที่ได้จาก Google Apps Script
 const form = document.getElementById('dataForm');
 
@@ -25,14 +31,15 @@ form.addEventListener('submit', e => {
     const data = {};
     formData.forEach((value, key) => (data[key] = value));
 
-        fetch(scriptURL, {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            })
-        .then(response => response.text())
-        .then(result => alert(result))
-        .catch(error => console.error('Error!', error.message));
-    });
+    // ส่งข้อมูลไปยัง Google Apps Script
+    fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.text())
+    .then(result => alert(result))
+    .catch(error => console.error('Error!', error.message));
+});

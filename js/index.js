@@ -276,6 +276,7 @@ async function saveData() {
             return;
         }
 
+        // ข้อมูลที่ต้องการบันทึก
         const recordData = {
             action: userAction,
             latitude: latitude,
@@ -284,6 +285,7 @@ async function saveData() {
             username: `${userData.fname} ${userData.lname}`,
             memberCode: userData.memberCode,
             userPosition: userData.jobPosition,
+            userId: userId, // เพิ่ม userId เข้าไปที่นี่
         };
 
         if (capturedImage) {
@@ -306,6 +308,7 @@ async function saveData() {
         alert("ไม่สามารถบันทึกข้อมูลได้");
     }
 }
+
 
 
 // ผูกฟังก์ชัน saveData กับปุ่มบันทึก

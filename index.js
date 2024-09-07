@@ -158,39 +158,64 @@ function isMobileDevice() {
     return /Mobi|Android/i.test(navigator.userAgent);
 }
 
-// ฟังก์ชันสำหรับบันทึกข้อมูล
-function saveData() {
+async function saveData() {
     if (!locationChecked) {
         alert("กรุณาตรวจสอบตำแหน่งของคุณก่อนทำการบันทึก");
         return;
     }
 
-    // ตรวจสอบว่าค่าของ userAction ถูกตั้งค่าแล้ว
     if (!userAction) {
         alert("เกิดข้อผิดพลาด: ไม่พบข้อมูลการกระทำ");
         return;
     }
 
-    const userData = {
-        action: userAction, // เข้างานหรือออกงาน
-        capturedImage: capturedImage,
-        latitude: latitude, // บันทึกค่าพิกัด latitude
-        longitude: longitude, // บันทึกค่าพิกัด longitude
-        timestamp: new Date().toLocaleString(),
-        username: "${userData.fname} ${userData.lname}",
-        memberCode : "${userData.memberCode}",
-        userPosition: "${userData.jobPosition}"
-    };
+    try {
+        // ข้อมูลที่ต้องการบันทึก
+        const userData = {
+            action: userAction, // เข้างานหรือออกงาน
+            latitude: latitude, // บันทึกค่าพิกัด latitude
+            longitude: longitude, // บันทึกค่าพิกัด longitude
+            timestamp: new Date().toLocaleString(),
+            username: `${userData.fname} ${userData.lname}`, // ใช้ template literals
+            memberCode: `${userData.memberCode}`, // ใช้ template literals
+            userPosition: `${userData.jobPosition}` // ใช้ template literals
+        };
 
-    console.log("Saved Data:", userData);
-    alert("บันทึกข้อมูลสำเร็จ!");
+        // อัปโหลดรูปภาพไปยัง Firebase Storage
+        if (capturedImage) {
+            const storageRef = firebase.storage().ref();
+            const imageRef = storageRef.child(`images/${Date.now()}.jpg`);
 
-    // รีเฟรชหน้าเว็บ
-    // location.reload();
+            // สร้าง blob จาก capturedImage
+            const blob = new Blob([capturedImage], { type: 'image/jpeg' });
+
+            // อัปโหลด blob
+            await imageRef.put(blob);
+            const imageUrl = await imageRef.getDownloadURL();
+
+            // เพิ่ม URL รูปภาพใน userData
+            userData.capturedImage = imageUrl;
+        }
+
+        // บันทึกข้อมูลไปยัง Firestore
+        const db = firebase.firestore();
+        await db.collection("records").add(userData);
+
+        console.log("Saved Data:", userData);
+        alert("บันทึกข้อมูลสำเร็จ!");
+
+        // รีเฟรชหน้าเว็บ
+        location.reload();
+    } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
+        alert("ไม่สามารถบันทึกข้อมูลได้");
+    }
 }
 
 // ผูกฟังก์ชัน saveData กับปุ่มบันทึก
 document.querySelector('.container3 .btn.blue').addEventListener('click', saveData);
+
+
 
 document.getElementById('cancelButton').addEventListener('click', function() {
     location.reload(); // รีเฟรชหน้าเว็บ

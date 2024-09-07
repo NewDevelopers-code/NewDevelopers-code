@@ -170,15 +170,20 @@ async function saveData() {
     }
 
     try {
+        // ดึงข้อมูลผู้ใช้จากฟังก์ชันที่ดึงจาก Realtime Database
+        const userRef = firebase.database().ref(`users/${userId}`);
+        const snapshot = await userRef.once('value');
+        const userData = snapshot.val(); // ข้อมูลผู้ใช้ที่ได้จาก Realtime Database
+
         // ข้อมูลที่ต้องการบันทึก
-        const userData = {
+        const recordData = {
             action: userAction, // เข้างานหรือออกงาน
             latitude: latitude, // บันทึกค่าพิกัด latitude
             longitude: longitude, // บันทึกค่าพิกัด longitude
             timestamp: new Date().toLocaleString(),
-            username: `${userData.fname} ${userData.lname}`, // ใช้ template literals
-            memberCode: `${userData.memberCode}`, // ใช้ template literals
-            userPosition: `${userData.jobPosition}` // ใช้ template literals
+            username: `${userData.fname} ${userData.lname}`, // ข้อมูลจาก Realtime Database
+            memberCode: userData.memberCode, // ข้อมูลจาก Realtime Database
+            userPosition: userData.jobPosition, // ข้อมูลจาก Realtime Database
         };
 
         // อัปโหลดรูปภาพไปยัง Firebase Storage
@@ -186,22 +191,19 @@ async function saveData() {
             const storageRef = firebase.storage().ref();
             const imageRef = storageRef.child(`images/${Date.now()}.jpg`);
 
-            // สร้าง blob จาก capturedImage
             const blob = new Blob([capturedImage], { type: 'image/jpeg' });
-
-            // อัปโหลด blob
             await imageRef.put(blob);
             const imageUrl = await imageRef.getDownloadURL();
 
-            // เพิ่ม URL รูปภาพใน userData
-            userData.capturedImage = imageUrl;
+            // เพิ่ม URL รูปภาพใน recordData
+            recordData.capturedImage = imageUrl;
         }
 
         // บันทึกข้อมูลไปยัง Firestore
         const db = firebase.firestore();
-        await db.collection("records").add(userData);
+        await db.collection("records").add(recordData);
 
-        console.log("Saved Data:", userData);
+        console.log("Saved Data:", recordData);
         alert("บันทึกข้อมูลสำเร็จ!");
 
         // รีเฟรชหน้าเว็บ
@@ -211,6 +213,7 @@ async function saveData() {
         alert("ไม่สามารถบันทึกข้อมูลได้");
     }
 }
+
 
 
 // ผูกฟังก์ชัน saveData กับปุ่มบันทึก

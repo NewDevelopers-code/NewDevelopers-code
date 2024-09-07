@@ -218,18 +218,18 @@ async function initializeLiff() {
             const profile = await liff.getProfile();
             const userId = profile.userId;
 
-            console.log("User ID:", userId);  // ตรวจสอบว่าดึง userId จาก LIFF มาได้ถูกต้องหรือไม่
+            console.log("User ID จาก LIFF:", userId);  // ตรวจสอบ userId ที่ได้รับจาก LIFF
 
-            // ดึงข้อมูลผู้ใช้จาก Firestore
+            // ตรวจสอบการดึงข้อมูลจาก Firestore
             const userRef = db.collection("users").doc(userId);
             const userDoc = await userRef.get();
 
             if (userDoc.exists) {
-                console.log("User data:", userDoc.data());  // ตรวจสอบว่าดึงข้อมูลผู้ใช้มาได้ถูกต้องหรือไม่
+                console.log("ข้อมูลผู้ใช้:", userDoc.data());  // ตรวจสอบข้อมูลที่ดึงได้จาก Firestore
                 displayUserInfo(userDoc.data());
                 document.querySelector('.container').style.display = 'block';
             } else {
-                // ถ้าไม่พบข้อมูลผู้ใช้ในฐานข้อมูล
+                console.log("ไม่พบข้อมูลใน Firestore สำหรับ User ID นี้");  // หากไม่พบข้อมูล
                 Swal.fire({
                     icon: 'error',
                     title: 'ไม่พบข้อมูลผู้ใช้',
@@ -241,7 +241,7 @@ async function initializeLiff() {
             }
         }
     } catch (error) {
-        console.error("LIFF initialization failed", error);
+        console.error("เกิดข้อผิดพลาดในขั้นตอน LIFF หรือ Firestore", error);
         Swal.fire({
             icon: 'error',
             title: 'เกิดข้อผิดพลาด',
@@ -249,6 +249,7 @@ async function initializeLiff() {
         });
     }
 }
+
 
 
 // ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ใน div user-info

@@ -34,32 +34,51 @@ function showContent() {
 // -----------------------------ส่วนของการบันทึกข้อมูล---------------------------------------//
 
 function generateMemberCode(currentYear, totalUsers) {
-  return `${currentYear}${totalUsers.toString().padStart(4, '0')}`;
-}
-
-async function submitForm() {
-  const userId = document.getElementById('UserId').value;
-  const fname = document.getElementById('fname').value;
-  const lname = document.getElementById('lname').value;
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const timestamp = currentDate.toISOString();
-
-  try {
-      const snapshot = await firebase.firestore().collection('users').get();
-      const totalUsers = snapshot.size + 1;
-      const memberCode = generateMemberCode(currentYear, totalUsers);
-
-      await firebase.firestore().collection('users').add({
-          date: timestamp,
-          userId: userId,
-          fname: fname,
-          lname: lname,
-          memberCode: memberCode
-      });
-
-      alert('บันทึกข้อมูลสำเร็จ');
-  } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
+    return `${currentYear}${totalUsers.toString().padStart(4, '0')}`;
   }
-}
+  
+  async function submitForm() {
+    const userId = document.getElementById('UserId').value;
+    const fname = document.getElementById('fname').value;
+    const lname = document.getElementById('lname').value;
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const timestamp = currentDate.toISOString();
+    const jobPosition = "General staff";  // กำหนดตำแหน่งงานเป็น General staff
+  
+    try {
+        const snapshot = await firebase.firestore().collection('users').get();
+        const totalUsers = snapshot.size + 1;
+        const memberCode = generateMemberCode(currentYear, totalUsers);
+  
+        // บันทึกข้อมูลรวมถึง jobPosition
+        await firebase.firestore().collection('users').add({
+            date: timestamp,
+            userId: userId,
+            fname: fname,
+            lname: lname,
+            memberCode: memberCode,
+            jobPosition: jobPosition  // เพิ่มฟิลด์ตำแหน่งงาน
+        });
+  
+        // ใช้ SweetAlert2 แทน alert
+        Swal.fire({
+          icon: 'success',
+          title: 'สำเร็จ!',
+          text: 'บันทึกข้อมูลสำเร็จ',
+          confirmButtonText: 'ตกลง'
+        });
+  
+    } catch (error) {
+        console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
+        
+        // ใช้ SweetAlert2 แสดงข้อผิดพลาด
+        Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด!',
+          text: 'ไม่สามารถบันทึกข้อมูลได้',
+          confirmButtonText: 'ตกลง'
+        });
+    }
+  }
+  

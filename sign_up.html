@@ -8,8 +8,6 @@
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- ใช้ Firebase SDK จาก CDN -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
 </head>
@@ -40,20 +38,21 @@
     <script src="./sign_up.js"></script>
 
     <script>
-        // ตั้งค่า Firebase (ใช้ Firebase SDK เวอร์ชัน compat เพื่อรองรับโค้ดแบบเก่า)
+        // Your Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyBZB4jmbhWHTQbk7FiDtu3q-cE1ryByvTA",
-            authDomain: "timeinout-310f0.firebaseapp.com",
-            projectId: "timeinout-310f0",
-            storageBucket: "timeinout-310f0.appspot.com",
-            messagingSenderId: "756973933115",
-            appId: "1:756973933115:web:34344b10d3ee05279e421e",
-            measurementId: "G-7Z0B2DDQN9"
+          apiKey: "AIzaSyBZB4jmbhWHTQbk7FiDtu3q-cE1ryByvTA",
+          authDomain: "timeinout-310f0.firebaseapp.com",
+          databaseURL: "https://timeinout-310f0-default-rtdb.firebaseio.com",
+          projectId: "timeinout-310f0",
+          storageBucket: "timeinout-310f0.appspot.com",
+          messagingSenderId: "756973933115",
+          appId: "1:756973933115:web:34344b10d3ee05279e421e",
+          measurementId: "G-7Z0B2DDQN9"
         };
-
+    
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const database = firebase.database();
     </script>
 </body>
 </html>

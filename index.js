@@ -218,14 +218,14 @@ async function initializeLiff() {
             const profile = await liff.getProfile();
             const userId = profile.userId;
 
-            console.log("User ID จาก LIFF:", userId);  // ตรวจสอบ userId ที่ได้รับจาก LIFF
+            // console.log("User ID จาก LIFF:", userId);  // ตรวจสอบ userId ที่ได้รับจาก LIFF
 
             // ตรวจสอบการดึงข้อมูลจาก Realtime Database
             const userRef = database.ref(`users/${userId}`);
             userRef.once('value', snapshot => {
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
-                    console.log("ข้อมูลผู้ใช้:", userData);  // ตรวจสอบข้อมูลที่ดึงได้จาก Realtime Database
+                    // console.log("ข้อมูลผู้ใช้:", userData);  // ตรวจสอบข้อมูลที่ดึงได้จาก Realtime Database
                     displayUserInfo(userData);
                     document.querySelector('.container').style.display = 'block';
                 } else {

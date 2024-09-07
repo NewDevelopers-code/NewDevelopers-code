@@ -22,18 +22,11 @@ function scanQRCode() {
         
         if (code) {
             output.textContent = `Code: ${code.data}`;
-            // ส่งข้อมูลไปยัง Chrome Extension
-            sendToChromeExtension(code.data);
+            // ส่งข้อมูลไปยัง Content Script ของ Chrome Extension
+            window.postMessage({ action: 'qrCodeScanned', code: code.data }, '*');
         } else {
             output.textContent = 'No code detected.';
         }
     }
     requestAnimationFrame(scanQRCode);
-}
-
-// ส่งข้อมูลไปยัง Chrome Extension
-function sendToChromeExtension(data) {
-    chrome.runtime.sendMessage({ action: 'fillSearchBar', code: data }, response => {
-        console.log('Response from extension:', response);
-    });
 }

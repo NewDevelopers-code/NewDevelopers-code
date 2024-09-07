@@ -209,35 +209,34 @@ document.getElementById('leave-btn').addEventListener('click', function() {
 
 // ------------------------------------------------------------------
 
-// js/liff.js
 async function initializeLiff() {
     try {
-        await liff.init({ liffId: "2006013145-q4P949Z6" }); // ใส่ LIFF ID ของคุณที่นี่
+        await liff.init({ liffId: "2006013145-q4P949Z6" });
         if (!liff.isLoggedIn()) {
             liff.login();
         } else {
             const profile = await liff.getProfile();
             const userId = profile.userId;
 
+            console.log("User ID:", userId);  // ตรวจสอบว่าดึง userId จาก LIFF มาได้ถูกต้องหรือไม่
+
             // ดึงข้อมูลผู้ใช้จาก Firestore
             const userRef = db.collection("users").doc(userId);
             const userDoc = await userRef.get();
 
             if (userDoc.exists) {
-                // แสดงข้อมูลผู้ใช้ถ้าเจอข้อมูลใน Firestore
+                console.log("User data:", userDoc.data());  // ตรวจสอบว่าดึงข้อมูลผู้ใช้มาได้ถูกต้องหรือไม่
                 displayUserInfo(userDoc.data());
-                document.querySelector('.container').style.display = 'block'; // แสดงหน้าเว็บ
+                document.querySelector('.container').style.display = 'block';
             } else {
-                // ถ้าไม่พบข้อมูลผู้ใช้ ทำการปิดหน้าเว็บ
+                // ถ้าไม่พบข้อมูลผู้ใช้ในฐานข้อมูล
                 Swal.fire({
                     icon: 'error',
                     title: 'ไม่พบข้อมูลผู้ใช้',
                     text: 'User ID ของคุณไม่ได้ลงทะเบียนในระบบ',
                     confirmButtonText: 'ปิด'
                 }).then(() => {
-                    // ออกจาก LIFF หรือปิดหน้าเว็บ
-                    liff.closeWindow(); // ใช้สำหรับปิดแอป LIFF
-                    // หรือใช้ window.location.href = 'URL'; เพื่อนำไปที่หน้าอื่น
+                    liff.closeWindow();
                 });
             }
         }
@@ -250,6 +249,7 @@ async function initializeLiff() {
         });
     }
 }
+
 
 // ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ใน div user-info
 function displayUserInfo(userData) {

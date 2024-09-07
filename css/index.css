@@ -50,12 +50,12 @@ body {
 }
 
 #check-in-time {
-    animation: blink 1s step-start infinite;
+    animation: blinkColor 2s infinite;
 }
 
 
 #check-out-time {
-    animation: blink 1s step-start infinite;
+    animation: blinkColor 2s infinite;
 }
 
 .button-group {

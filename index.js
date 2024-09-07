@@ -219,15 +219,15 @@ async function initializeLiff() {
             const userId = profile.userId;
             const profilePictureUrl = profile.pictureUrl; // URL ของรูปโปรไฟล์
 
-            console.log("User ID จาก LIFF:", userId);
-            console.log("URL รูปโปรไฟล์:", profilePictureUrl);  // ตรวจสอบ URL รูปโปรไฟล์
+            // console.log("User ID จาก LIFF:", userId);
+            // console.log("URL รูปโปรไฟล์:", profilePictureUrl);  // ตรวจสอบ URL รูปโปรไฟล์
 
             // ตรวจสอบการดึงข้อมูลจาก Realtime Database
             const userRef = database.ref(`users/${userId}`);
             userRef.once('value', snapshot => {
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
-                    console.log("ข้อมูลผู้ใช้:", userData);
+                    // console.log("ข้อมูลผู้ใช้:", userData);
                     displayUserInfo(userData, profilePictureUrl);
                     document.querySelector('.container').style.display = 'block';
                 } else {

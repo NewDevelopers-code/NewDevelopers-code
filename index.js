@@ -212,6 +212,7 @@ async function saveData() {
     }
 }
 
+
 // ผูกฟังก์ชัน saveData กับปุ่มบันทึก
 document.querySelector('.container3 .btn.blue').addEventListener('click', saveData);
 

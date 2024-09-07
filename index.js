@@ -220,28 +220,29 @@ async function initializeLiff() {
 
             console.log("User ID จาก LIFF:", userId);  // ตรวจสอบ userId ที่ได้รับจาก LIFF
 
-            // ตรวจสอบการดึงข้อมูลจาก Firestore
-            const userRef = db.collection("users").doc(userId);
-            const userDoc = await userRef.get();
-
-            if (userDoc.exists) {
-                console.log("ข้อมูลผู้ใช้:", userDoc.data());  // ตรวจสอบข้อมูลที่ดึงได้จาก Firestore
-                displayUserInfo(userDoc.data());
-                document.querySelector('.container').style.display = 'block';
-            } else {
-                console.log("ไม่พบข้อมูลใน Firestore สำหรับ User ID นี้");  // หากไม่พบข้อมูล
-                Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่พบข้อมูลผู้ใช้',
-                    text: 'User ID ของคุณไม่ได้ลงทะเบียนในระบบ',
-                    confirmButtonText: 'ปิด'
-                }).then(() => {
-                    liff.closeWindow();
-                });
-            }
+            // ตรวจสอบการดึงข้อมูลจาก Realtime Database
+            const userRef = database.ref(`users/${userId}`);
+            userRef.once('value', snapshot => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    console.log("ข้อมูลผู้ใช้:", userData);  // ตรวจสอบข้อมูลที่ดึงได้จาก Realtime Database
+                    displayUserInfo(userData);
+                    document.querySelector('.container').style.display = 'block';
+                } else {
+                    console.log("ไม่พบข้อมูลใน Realtime Database สำหรับ User ID นี้");  // หากไม่พบข้อมูล
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ไม่พบข้อมูลผู้ใช้',
+                        text: 'User ID ของคุณไม่ได้ลงทะเบียนในระบบ',
+                        confirmButtonText: 'ปิด'
+                    }).then(() => {
+                        liff.closeWindow();
+                    });
+                }
+            });
         }
     } catch (error) {
-        console.error("เกิดข้อผิดพลาดในขั้นตอน LIFF หรือ Firestore", error);
+        console.error("เกิดข้อผิดพลาดในขั้นตอน LIFF หรือ Realtime Database", error);
         Swal.fire({
             icon: 'error',
             title: 'เกิดข้อผิดพลาด',
@@ -254,7 +255,7 @@ async function initializeLiff() {
 function displayUserInfo(userData) {
     const userInfoDiv = document.querySelector('.user-info');
     
-    // อัปเดตข้อมูลใน div ตามข้อมูลที่ได้จาก Firestore
+    // อัปเดตข้อมูลใน div ตามข้อมูลที่ได้จาก Realtime Database
     userInfoDiv.innerHTML = `
         <p>สวัสดีคุณ : ${userData.fname} ${userData.lname}</p>
         <p>memberCode : ${userData.memberCode}</p>

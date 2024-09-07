@@ -249,8 +249,6 @@ async function initializeLiff() {
             icon: 'error',
             title: 'เกิดข้อผิดพลาด',
             text: 'ไม่สามารถโหลดข้อมูลได้',
-        }).then(() => {
-            liff.closeWindow();
         });
     }
 }

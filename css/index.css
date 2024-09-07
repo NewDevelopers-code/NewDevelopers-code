@@ -40,10 +40,13 @@ body {
 }
 
 /* สไตล์เพื่อทำให้ข้อความกระพริบ */
-@keyframes blink {
-    0% { opacity: 1; }
-    50% { opacity: 0; }
-    100% { opacity: 1; }
+/* สไตล์เพื่อทำให้ข้อความกระพริบและเปลี่ยนสี */
+@keyframes blinkColor {
+    0% { color: #ff0000; opacity: 1; } /* สีแดง */
+    25% { color: #00ff00; opacity: 1; } /* สีเขียว */
+    50% { color: #0000ff; opacity: 1; } /* สีน้ำเงิน */
+    75% { color: #ff00ff; opacity: 1; } /* สีม่วง */
+    100% { color: #ff0000; opacity: 1; } /* กลับไปที่สีแดง */
 }
 
 #check-in-time {

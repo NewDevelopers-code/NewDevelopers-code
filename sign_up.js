@@ -55,7 +55,7 @@ function generateMemberCode(currentYear, totalUsers) {
             Swal.fire({
                 icon: 'warning',
                 title: 'เกิดข้อผิดพลาด!',
-                text: 'userId นี้มีการลงทะเบียนแล้ว โปรดติดต่อผู้ดูแลระบบ',
+                text: 'ID นี้มีการลงทะเบียนแล้ว โปรดติดต่อผู้ดูแลระบบ',
                 confirmButtonText: 'ตกลง'
             });
         } else {

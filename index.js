@@ -3,6 +3,8 @@ let locationChecked = false;
 let userAction = ""; // เข้างานหรือออกงาน
 let latitude = null;
 let longitude = null;
+let userId = null; // ประกาศตัวแปรในขอบเขต global
+
 
 document.addEventListener('DOMContentLoaded', function() {
     // ผูกฟังก์ชันกับปุ่มเมื่อโหลดหน้า
@@ -245,18 +247,14 @@ async function initializeLiff() {
             liff.login();
         } else {
             const profile = await liff.getProfile();
-            const userId = profile.userId;
+            userId = profile.userId; // กำหนดค่า userId จาก LIFF profile
             const profilePictureUrl = profile.pictureUrl; // URL ของรูปโปรไฟล์
-
-            // console.log("User ID จาก LIFF:", userId);
-            // console.log("URL รูปโปรไฟล์:", profilePictureUrl);  // ตรวจสอบ URL รูปโปรไฟล์
 
             // ตรวจสอบการดึงข้อมูลจาก Realtime Database
             const userRef = database.ref(`users/${userId}`);
             userRef.once('value', snapshot => {
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
-                    // console.log("ข้อมูลผู้ใช้:", userData);
                     displayUserInfo(userData, profilePictureUrl);
                     document.querySelector('.container').style.display = 'block';
                 } else {

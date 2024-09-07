@@ -6,11 +6,11 @@
     <title>Document</title>
     <link rel="stylesheet" href="./css/sign_up.css">
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+    <!-- ใช้ Firebase SDK จาก CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <!-- เนื้อหาเดิมของคุณ -->
     <div class="container" style="display: none;">
         <div class="image">
             <img class="profile-image" src="https://www.colliers.com/-/media/images/colliers/asia/philippines/colliers-review/collierreview_hero_image_01312022_v2/hero_image_tondominium/hero_image_021522/hero_image_colliersviewpoint_022222.ashx?bid=0f5b3ed2a8de41f89e1a8d557e48f9f8&w=747&hash=0FC8E3209597476C90DAEE09EFE172AE" alt="Profile Image">
@@ -37,7 +37,7 @@
     <script src="./sign_up.js"></script>
 
     <script>
-        // ตั้งค่า Firebase
+        // ตั้งค่า Firebase (ใช้ Firebase SDK เวอร์ชัน compat เพื่อรองรับโค้ดแบบเก่า)
         const firebaseConfig = {
             apiKey: "AIzaSyBZB4jmbhWHTQbk7FiDtu3q-cE1ryByvTA",
             authDomain: "timeinout-310f0.firebaseapp.com",
@@ -49,7 +49,7 @@
         };
 
         // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
     </script>
 </body>

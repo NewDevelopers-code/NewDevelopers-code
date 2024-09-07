@@ -33,32 +33,24 @@ function showContent() {
 
 // -----------------------------ส่วนของการบันทึกข้อมูล---------------------------------------//
 
-// ฟังก์ชันสร้างรหัสสมาชิกอัตโนมัติ
 function generateMemberCode(currentYear, totalUsers) {
   return `${currentYear}${totalUsers.toString().padStart(4, '0')}`;
 }
 
 async function submitForm() {
-  // รับข้อมูลจากฟอร์ม
   const userId = document.getElementById('UserId').value;
   const fname = document.getElementById('fname').value;
   const lname = document.getElementById('lname').value;
-
-  // รับวันที่และเวลา
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const timestamp = currentDate.toISOString();
 
   try {
-      // นับจำนวนสมาชิกที่มีใน Firestore เพื่อสร้างรหัสสมาชิก
-      const snapshot = await db.collection('users').get();
+      const snapshot = await firebase.firestore().collection('users').get();
       const totalUsers = snapshot.size + 1;
-
-      // สร้างรหัสสมาชิก
       const memberCode = generateMemberCode(currentYear, totalUsers);
 
-      // บันทึกข้อมูลลง Firestore
-      await db.collection('users').add({
+      await firebase.firestore().collection('users').add({
           date: timestamp,
           userId: userId,
           fname: fname,

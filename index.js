@@ -186,7 +186,7 @@ function saveData() {
     alert("บันทึกข้อมูลสำเร็จ!");
 
     // รีเฟรชหน้าเว็บ
-    location.reload();
+    // location.reload();
 }
 
 // ผูกฟังก์ชัน saveData กับปุ่มบันทึก

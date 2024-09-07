@@ -209,58 +209,45 @@ document.getElementById('leave-btn').addEventListener('click', function() {
 
 // ------------------------------------------------------------------
 
-document.addEventListener('DOMContentLoaded', async function() {
-    await initializeLiff();
-});
-
+// js/liff.js
 async function initializeLiff() {
     try {
-        // เริ่มต้น LIFF SDK
-        await liff.init({ liffId: "2006013145-q4P949Z6" }); // ใส่ LIFF ID ของคุณ
-
-        // ตรวจสอบว่าได้ล็อกอินแล้วหรือไม่
+        await liff.init({ liffId: "2006013145-q4P949Z6" }); // ใส่ LIFF ID ของคุณที่นี่
         if (!liff.isLoggedIn()) {
-            liff.login(); // ทำการล็อกอินถ้ายังไม่ได้ล็อกอิน
+            liff.login();
         } else {
-            // ดึงข้อมูลโปรไฟล์ผู้ใช้
             const profile = await liff.getProfile();
             const userId = profile.userId;
 
-            // ตรวจสอบว่ามีการลงทะเบียน userId ใน Firebase หรือไม่
-            checkUserIdInFirebase(userId);
+            // ดึงข้อมูลผู้ใช้จาก Firestore
+            const userRef = db.collection("users").doc(userId);
+            const userDoc = await userRef.get();
+
+            if (userDoc.exists) {
+                // แสดงข้อมูลผู้ใช้ถ้าเจอข้อมูลใน Firestore
+                displayUserInfo(userDoc.data());
+                document.querySelector('.container').style.display = 'block'; // แสดงหน้าเว็บ
+            } else {
+                // ถ้าไม่พบข้อมูลผู้ใช้ ทำการปิดหน้าเว็บ
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่พบข้อมูลผู้ใช้',
+                    text: 'User ID ของคุณไม่ได้ลงทะเบียนในระบบ',
+                    confirmButtonText: 'ปิด'
+                }).then(() => {
+                    // ออกจาก LIFF หรือปิดหน้าเว็บ
+                    liff.closeWindow(); // ใช้สำหรับปิดแอป LIFF
+                    // หรือใช้ window.location.href = 'URL'; เพื่อนำไปที่หน้าอื่น
+                });
+            }
         }
     } catch (error) {
-        console.error("Error initializing LIFF:", error);
-        alert("เกิดข้อผิดพลาดในการเริ่มต้น LIFF");
-    }
-}
-
-async function checkUserIdInFirebase(userId) {
-    try {
-        // ค้นหา userId ใน Firestore
-        const userDoc = await db.collection("users").doc(userId).get();
-
-        if (userDoc.exists) {
-            // หาก userId มีการลงทะเบียนในฐานข้อมูล
-            const userData = userDoc.data();
-            console.log("User is registered:", userData);
-
-            // เรียกใช้ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้
-            displayUserInfo(userData);
-
-            // แสดงหน้าเว็บหลัก
-            showMainPage();
-        } else {
-            // หาก userId ไม่มีในฐานข้อมูล
-            Swal.fire({
-                icon: 'error',
-                title: 'ไม่มีการลงทะเบียน',
-                text: 'userId ของคุณไม่ได้ลงทะเบียนในระบบ',
-            });
-        }
-    } catch (error) {
-        console.error("Error checking userId in Firebase:", error);
-        alert("เกิดข้อผิดพลาดในการตรวจสอบ userId ในฐานข้อมูล");
+        console.error("LIFF initialization failed", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาด',
+            text: 'ไม่สามารถโหลดข้อมูลได้',
+        });
     }
 }
 
@@ -276,10 +263,8 @@ function displayUserInfo(userData) {
     `;
 }
 
-
-
-
-function showMainPage() {
-    document.querySelector('.container').style.display = 'block'; // แสดงหน้าเว็บหลัก
-}
-
+// เรียกใช้ LIFF เมื่อโหลดหน้า
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.container').style.display = 'none'; // ซ่อนหน้าเว็บจนกว่าจะโหลดข้อมูลเสร็จ
+    initializeLiff();
+});

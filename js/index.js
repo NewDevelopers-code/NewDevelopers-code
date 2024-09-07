@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     await initializeLiff();
     const db = firebase.firestore();
 
-    // ตรวจสอบเวลาเข้างานและออกงาน
-    try {
-        if (userId) {
+    if (userId) {
+        try {
+            // ตรวจสอบเวลาเข้างาน
             const checkInRef = db.collection('records')
                 .where('userId', '==', userId)
                 .where('action', '==', 'check-in')
@@ -42,14 +42,17 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const lastCheckIn = checkInSnapshot.docs[0].data();
                 const checkInTime = lastCheckIn.timestamp;
 
+                // แสดงเวลาเข้างานใน <span>
                 document.getElementById('check-in-time').innerText = `เข้างานแล้วเมื่อเวลา: ${checkInTime}`;
 
+                // ปิดการใช้งานปุ่มเข้างาน
                 const checkInButton = document.getElementById('check-in-btn');
                 checkInButton.disabled = true;
                 checkInButton.style.cursor = 'not-allowed';
                 checkInButton.style.opacity = 0.5;
             }
 
+            // ตรวจสอบเวลาออกงาน
             const checkOutRef = db.collection('records')
                 .where('userId', '==', userId)
                 .where('action', '==', 'check-out')
@@ -61,34 +64,40 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const lastCheckOut = checkOutSnapshot.docs[0].data();
                 const checkOutTime = lastCheckOut.timestamp;
 
+                // แสดงเวลาออกงานใน <span>
                 document.getElementById('check-out-time').innerText = `ออกงานแล้วเมื่อเวลา: ${checkOutTime}`;
 
+                // ปิดการใช้งานปุ่มออกงาน
                 const checkOutButton = document.getElementById('check-out-btn');
                 checkOutButton.disabled = true;
                 checkOutButton.style.cursor = 'not-allowed';
                 checkOutButton.style.opacity = 0.5;
             }
+
+            // ผูกฟังก์ชันกับปุ่ม
+            document.getElementById('check-in-btn').addEventListener('click', function() {
+                userAction = this.dataset.action;
+                showContainer2();
+            });
+
+            document.getElementById('check-out-btn').addEventListener('click', function() {
+                userAction = this.dataset.action;
+                showContainer2();
+            });
+
+            updateNextButtonStateContainer2();
+            updateNextButtonStateContainer3();
+
+        } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการตรวจสอบเวลา:", error);
+            alert("ไม่สามารถตรวจสอบเวลาการเข้างานหรือออกงานได้");
         }
-
-        // ผูกฟังก์ชันกับปุ่ม
-        document.getElementById('check-in-btn').addEventListener('click', function() {
-            userAction = this.dataset.action;
-            showContainer2();
-        });
-
-        document.getElementById('check-out-btn').addEventListener('click', function() {
-            userAction = this.dataset.action;
-            showContainer2();
-        });
-
-        updateNextButtonStateContainer2();
-        updateNextButtonStateContainer3();
-
-    } catch (error) {
-        console.error("เกิดข้อผิดพลาดในการตรวจสอบเวลา:", error);
-        alert("ไม่สามารถตรวจสอบเวลาการเข้างานหรือออกงานได้");
+    } else {
+        console.error("User ID is not defined.");
+        alert("ไม่สามารถกำหนด User ID");
     }
 });
+
 
 
 

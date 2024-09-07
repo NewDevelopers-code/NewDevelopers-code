@@ -57,6 +57,9 @@ async function submitForm() {
                 title: 'เกิดข้อผิดพลาด!',
                 text: 'userId นี้มีการลงทะเบียนแล้ว โปรดติดต่อผู้ดูแลระบบ',
                 confirmButtonText: 'ตกลง'
+            }).then(() => {
+                // ล้างค่าฟอร์มหลังจากการแจ้งเตือนสำเร็จ
+                document.getElementById('myForm').reset();
             });
         } else {
             // นับจำนวนผู้ใช้ที่มีอยู่ทั้งหมด

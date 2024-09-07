@@ -3,7 +3,6 @@ let locationChecked = false;
 let userAction = ""; // เข้างานหรือออกงาน
 let latitude = null;
 let longitude = null;
-let userId = null; // กำหนด userId ที่นี่
 
 document.addEventListener('DOMContentLoaded', function() {
     // ผูกฟังก์ชันกับปุ่มเมื่อโหลดหน้า
@@ -21,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateNextButtonStateContainer3(); // ตรวจสอบสถานะปุ่มบันทึกเมื่อโหลดหน้าใน container3
 });
 
+
 // ฟังก์ชันสำหรับแสดง container2 (ส่วนของการถ่ายรูป)
 function showContainer2() {
     document.querySelector('.container').style.display = 'none';
@@ -28,6 +28,7 @@ function showContainer2() {
     document.querySelector('.container3').style.display = 'none';
     updateNextButtonStateContainer2(); // อัปเดตสถานะของปุ่มถัดไปใน container2
 }
+
 
 // ฟังก์ชันสำหรับเปิดกล้อง
 function openCamera() {
@@ -87,7 +88,7 @@ function retakeImage() {
 function showContainer3() {
     document.querySelector('.container2').style.display = 'none';
     document.querySelector('.container3').style.display = 'block';
-    updateNextButtonStateContainer3(); // อัปเดตสถานะปุ่มบันทึกใน container3
+    updateNextButtonStateContainer3(); // อัปเดตสถานะของปุ่มบันทึกใน container3
 }
 
 // ฟังก์ชันสำหรับอัปเดตสถานะปุ่มถัดไปใน container2 (ถ่ายรูป)
@@ -117,6 +118,12 @@ function updateNextButtonStateContainer3() {
         saveButton.style.opacity = 0.5;
     }
 }
+
+// เรียกใช้เมื่อโหลดหน้า
+document.addEventListener('DOMContentLoaded', function() {
+    updateNextButtonStateContainer2(); // ตรวจสอบสถานะปุ่มถัดไปเมื่อโหลดหน้าใน container2
+    updateNextButtonStateContainer3(); // ตรวจสอบสถานะปุ่มบันทึกเมื่อโหลดหน้าใน container3
+});
 
 // ฟังก์ชันเช็คตำแหน่ง
 function checkLocation() {
@@ -184,7 +191,7 @@ async function saveData() {
             const storageRef = firebase.storage().ref();
             const imageRef = storageRef.child(`images/${Date.now()}.jpg`);
 
-            const blob = await fetch(capturedImage).then(res => res.blob()); // แปลง data URL เป็น Blob
+            const blob = new Blob([capturedImage], { type: 'image/jpeg' });
             await imageRef.put(blob);
             const imageUrl = await imageRef.getDownloadURL();
 
@@ -207,20 +214,27 @@ async function saveData() {
     }
 }
 
+
+
 // ผูกฟังก์ชัน saveData กับปุ่มบันทึก
 document.querySelector('.container3 .btn.blue').addEventListener('click', saveData);
 
+
+
 document.getElementById('cancelButton').addEventListener('click', function() {
     location.reload(); // รีเฟรชหน้าเว็บ
-});
+  });
+
 
 document.getElementById('cancelButtonMap').addEventListener('click', function() {
     location.reload(); // รีเฟรชหน้าเว็บ
-});
+  });
+
 
 document.getElementById('leave-btn').addEventListener('click', function() {
     window.location.href = './request.html'; // เปลี่ยน URL ไปยังหน้าเว็บที่ต้องการ
-});
+  });
+
 
 // ------------------------------------------------------------------
 
@@ -231,25 +245,45 @@ async function initializeLiff() {
             liff.login();
         } else {
             const profile = await liff.getProfile();
-            userId = profile.userId; // ดึง userId จาก LIFF
+            const userId = profile.userId;
+            const profilePictureUrl = profile.pictureUrl; // URL ของรูปโปรไฟล์
 
-            // ดึงข้อมูลผู้ใช้จาก Realtime Database
-            const userRef = firebase.database().ref(`users/${userId}`);
+            // console.log("User ID จาก LIFF:", userId);
+            // console.log("URL รูปโปรไฟล์:", profilePictureUrl);  // ตรวจสอบ URL รูปโปรไฟล์
+
+            // ตรวจสอบการดึงข้อมูลจาก Realtime Database
+            const userRef = database.ref(`users/${userId}`);
             userRef.once('value', snapshot => {
                 if (snapshot.exists()) {
-                    const userData = snapshot.val(); // ข้อมูลผู้ใช้ที่ได้จาก Realtime Database
-                    displayUserInfo(userData, profile.pictureUrl); // ฟังก์ชันแสดงข้อมูล
+                    const userData = snapshot.val();
+                    // console.log("ข้อมูลผู้ใช้:", userData);
+                    displayUserInfo(userData, profilePictureUrl);
+                    document.querySelector('.container').style.display = 'block';
                 } else {
-                    alert("ไม่พบข้อมูลใน Realtime Database สำหรับ User ID นี้");
+                    console.log("ไม่พบข้อมูลใน Realtime Database สำหรับ User ID นี้");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ไม่พบข้อมูลผู้ใช้',
+                        text: 'User ID ของคุณไม่ได้ลงทะเบียนในระบบ',
+                        confirmButtonText: 'ปิด'
+                    }).then(() => {
+                        liff.closeWindow();
+                    });
                 }
             });
         }
     } catch (error) {
         console.error("เกิดข้อผิดพลาดในขั้นตอน LIFF หรือ Realtime Database", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาด',
+            text: 'ไม่สามารถโหลดข้อมูลได้',
+        });
     }
 }
 
-// ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ในหน้าเว็บ
+
+// ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ใน div user-info
 function displayUserInfo(userData, profilePictureUrl) {
     const userInfoDiv = document.querySelector('.user-info');
     const profileImage = document.getElementById('profile-picture');
@@ -264,6 +298,8 @@ function displayUserInfo(userData, profilePictureUrl) {
     // อัปเดตรูปโปรไฟล์
     profileImage.src = profilePictureUrl;
 }
+
+
 
 // เรียกใช้ LIFF เมื่อโหลดหน้า
 document.addEventListener('DOMContentLoaded', function() {

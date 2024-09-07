@@ -250,8 +250,6 @@ async function initializeLiff() {
     }
 }
 
-
-
 // ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ใน div user-info
 function displayUserInfo(userData) {
     const userInfoDiv = document.querySelector('.user-info');

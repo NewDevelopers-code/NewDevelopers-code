@@ -177,9 +177,9 @@ function saveData() {
         latitude: latitude, // บันทึกค่าพิกัด latitude
         longitude: longitude, // บันทึกค่าพิกัด longitude
         timestamp: new Date().toLocaleString(),
-        username: "ชื่อผู้ใช้",
-        userId: "IDผู้ใช้",
-        userPosition: "ตำแหน่งงานผู้ใช้"
+        username: "${userData.fname} ${userData.lname}",
+        memberCode : "${userData.memberCode}",
+        userPosition: "${userData.jobPosition}"
     };
 
     console.log("Saved Data:", userData);

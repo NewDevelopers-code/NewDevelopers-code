@@ -68,7 +68,9 @@ function captureImage() {
     canvas.height = video.videoHeight;
     const context = canvas.getContext('2d');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    capturedImage = canvas.toDataURL('image/png');
+
+    // เปลี่ยนจาก 'image/png' เป็น 'image/jpeg' และเพิ่มการตั้งค่า quality
+    capturedImage = canvas.toDataURL('image/jpeg', 0.9); // Quality 0.9 (คุณภาพ 90%)
 
     document.querySelector('.image-container').innerHTML = '<img src="' + capturedImage + '" class="active">';
     document.getElementById('captureButton').style.display = 'none';
@@ -78,6 +80,7 @@ function captureImage() {
     
     updateNextButtonStateContainer2(); // อัปเดตสถานะของปุ่มถัดไปใน container2
 }
+
 
 // ฟังก์ชันสำหรับถ่ายรูปใหม่
 function retakeImage() {
@@ -160,6 +163,20 @@ function isMobileDevice() {
     return /Mobi|Android/i.test(navigator.userAgent);
 }
 
+
+// ฟังก์ชันแปลง Base64 เป็น Blob
+function base64ToBlob(base64, mimeType) {
+    const byteString = atob(base64.split(',')[1]);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+    
+    for (let i = 0; i < byteString.length; i++) {
+        intArray[i] = byteString.charCodeAt(i);
+    }
+    
+    return new Blob([intArray], { type: mimeType });
+}
+
 async function saveData() {
     if (!locationChecked) {
         alert("กรุณาตรวจสอบตำแหน่งของคุณก่อนทำการบันทึก");
@@ -193,7 +210,8 @@ async function saveData() {
             const storageRef = firebase.storage().ref();
             const imageRef = storageRef.child(`images/${Date.now()}.jpg`);
 
-            const blob = new Blob([capturedImage], { type: 'image/jpeg' });
+            // แปลง Base64 เป็น Blob ก่อนทำการอัปโหลด
+            const blob = base64ToBlob(capturedImage, 'image/jpeg');
             await imageRef.put(blob);
             const imageUrl = await imageRef.getDownloadURL();
 
@@ -215,8 +233,6 @@ async function saveData() {
         alert("ไม่สามารถบันทึกข้อมูลได้");
     }
 }
-
-
 
 // ผูกฟังก์ชัน saveData กับปุ่มบันทึก
 document.querySelector('.container3 .btn.blue').addEventListener('click', saveData);

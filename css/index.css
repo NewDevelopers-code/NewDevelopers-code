@@ -39,6 +39,22 @@ body {
     font-weight: bold;
 }
 
+/* สไตล์เพื่อทำให้ข้อความกระพริบ */
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+#check-in-time {
+    animation: blink 1s step-start infinite;
+}
+
+
+#check-out-time {
+    animation: blink 1s step-start infinite;
+}
+
 .button-group {
     display: flex;
     flex-direction: column;

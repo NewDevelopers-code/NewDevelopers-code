@@ -267,50 +267,46 @@ async function saveData() {
     }
 
     try {
-        // ดึงข้อมูลผู้ใช้จากฟังก์ชันที่ดึงจาก Realtime Database
         const userRef = firebase.database().ref(`users/${userId}`);
         const snapshot = await userRef.once('value');
         const userData = snapshot.val(); // ข้อมูลผู้ใช้ที่ได้จาก Realtime Database
 
-        // ข้อมูลที่ต้องการบันทึก
+        if (!userData) {
+            console.error("ไม่พบข้อมูลผู้ใช้ใน Realtime Database");
+            return;
+        }
+
         const recordData = {
-            action: userAction, // เข้างานหรือออกงาน
-            latitude: latitude, // บันทึกค่าพิกัด latitude
-            longitude: longitude, // บันทึกค่าพิกัด longitude
+            action: userAction,
+            latitude: latitude,
+            longitude: longitude,
             timestamp: new Date().toLocaleString(),
-            username: `${userData.fname} ${userData.lname}`, // ข้อมูลจาก Realtime Database
-            memberCode: userData.memberCode, // ข้อมูลจาก Realtime Database
-            userPosition: userData.jobPosition, // ข้อมูลจาก Realtime Database
+            username: `${userData.fname} ${userData.lname}`,
+            memberCode: userData.memberCode,
+            userPosition: userData.jobPosition,
         };
 
-        // อัปโหลดรูปภาพไปยัง Firebase Storage
         if (capturedImage) {
             const storageRef = firebase.storage().ref();
             const imageRef = storageRef.child(`images/${Date.now()}.jpg`);
-
-            // แปลง Base64 เป็น Blob ก่อนทำการอัปโหลด
             const blob = base64ToBlob(capturedImage, 'image/jpeg');
             await imageRef.put(blob);
             const imageUrl = await imageRef.getDownloadURL();
-
-            // เพิ่ม URL รูปภาพใน recordData
             recordData.capturedImage = imageUrl;
         }
 
-        // บันทึกข้อมูลไปยัง Firestore
         const db = firebase.firestore();
         await db.collection("records").add(recordData);
 
         console.log("Saved Data:", recordData);
         alert("บันทึกข้อมูลสำเร็จ!");
-
-        // รีเฟรชหน้าเว็บ
         location.reload();
     } catch (error) {
         console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
         alert("ไม่สามารถบันทึกข้อมูลได้");
     }
 }
+
 
 // ผูกฟังก์ชัน saveData กับปุ่มบันทึก
 document.querySelector('.container3 .btn.blue').addEventListener('click', saveData);
@@ -334,6 +330,7 @@ document.getElementById('leave-btn').addEventListener('click', function() {
 
 // ------------------------------------------------------------------
 
+// ตรวจสอบว่า userId ถูกกำหนดค่าในฟังก์ชัน initializeLiff
 async function initializeLiff() {
     try {
         await liff.init({ liffId: "2006013145-q4P949Z6" });
@@ -342,14 +339,18 @@ async function initializeLiff() {
         } else {
             const profile = await liff.getProfile();
             userId = profile.userId; // กำหนดค่า userId จาก LIFF profile
-            const profilePictureUrl = profile.pictureUrl; // URL ของรูปโปรไฟล์
 
-            // ตรวจสอบการดึงข้อมูลจาก Realtime Database
-            const userRef = database.ref(`users/${userId}`);
+            if (!userId) {
+                console.error("userId ไม่ได้กำหนดค่า");
+                return;
+            }
+
+            // ดึงข้อมูลผู้ใช้จาก Realtime Database
+            const userRef = firebase.database().ref(`users/${userId}`);
             userRef.once('value', snapshot => {
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
-                    displayUserInfo(userData, profilePictureUrl);
+                    displayUserInfo(userData, profile.pictureUrl);
                     document.querySelector('.container').style.display = 'block';
                 } else {
                     console.log("ไม่พบข้อมูลใน Realtime Database สำหรับ User ID นี้");
@@ -373,6 +374,7 @@ async function initializeLiff() {
         });
     }
 }
+
 
 
 // ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ใน div user-info

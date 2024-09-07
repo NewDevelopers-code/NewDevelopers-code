@@ -245,45 +245,25 @@ async function initializeLiff() {
             liff.login();
         } else {
             const profile = await liff.getProfile();
-            const userId = profile.userId;
-            const profilePictureUrl = profile.pictureUrl; // URL ของรูปโปรไฟล์
+            const userId = profile.userId; // ดึง userId จาก LIFF
 
-            // console.log("User ID จาก LIFF:", userId);
-            // console.log("URL รูปโปรไฟล์:", profilePictureUrl);  // ตรวจสอบ URL รูปโปรไฟล์
-
-            // ตรวจสอบการดึงข้อมูลจาก Realtime Database
-            const userRef = database.ref(`users/${userId}`);
+            // ดึงข้อมูลผู้ใช้จาก Realtime Database
+            const userRef = firebase.database().ref(`users/${userId}`);
             userRef.once('value', snapshot => {
                 if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    // console.log("ข้อมูลผู้ใช้:", userData);
-                    displayUserInfo(userData, profilePictureUrl);
-                    document.querySelector('.container').style.display = 'block';
+                    const userData = snapshot.val(); // ข้อมูลผู้ใช้ที่ได้จาก Realtime Database
+                    displayUserInfo(userData, profile.pictureUrl); // ฟังก์ชันแสดงข้อมูล
                 } else {
-                    console.log("ไม่พบข้อมูลใน Realtime Database สำหรับ User ID นี้");
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'ไม่พบข้อมูลผู้ใช้',
-                        text: 'User ID ของคุณไม่ได้ลงทะเบียนในระบบ',
-                        confirmButtonText: 'ปิด'
-                    }).then(() => {
-                        liff.closeWindow();
-                    });
+                    alert("ไม่พบข้อมูลใน Realtime Database สำหรับ User ID นี้");
                 }
             });
         }
     } catch (error) {
         console.error("เกิดข้อผิดพลาดในขั้นตอน LIFF หรือ Realtime Database", error);
-        Swal.fire({
-            icon: 'error',
-            title: 'เกิดข้อผิดพลาด',
-            text: 'ไม่สามารถโหลดข้อมูลได้',
-        });
     }
 }
 
-
-// ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ใน div user-info
+// ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ในหน้าเว็บ
 function displayUserInfo(userData, profilePictureUrl) {
     const userInfoDiv = document.querySelector('.user-info');
     const profileImage = document.getElementById('profile-picture');
@@ -298,6 +278,7 @@ function displayUserInfo(userData, profilePictureUrl) {
     // อัปเดตรูปโปรไฟล์
     profileImage.src = profilePictureUrl;
 }
+
 
 
 

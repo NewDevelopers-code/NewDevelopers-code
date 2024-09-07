@@ -217,19 +217,21 @@ async function initializeLiff() {
         } else {
             const profile = await liff.getProfile();
             const userId = profile.userId;
+            const profilePictureUrl = profile.pictureUrl; // URL ของรูปโปรไฟล์
 
-            // console.log("User ID จาก LIFF:", userId);  // ตรวจสอบ userId ที่ได้รับจาก LIFF
+            console.log("User ID จาก LIFF:", userId);
+            console.log("URL รูปโปรไฟล์:", profilePictureUrl);  // ตรวจสอบ URL รูปโปรไฟล์
 
             // ตรวจสอบการดึงข้อมูลจาก Realtime Database
             const userRef = database.ref(`users/${userId}`);
             userRef.once('value', snapshot => {
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
-                    // console.log("ข้อมูลผู้ใช้:", userData);  // ตรวจสอบข้อมูลที่ดึงได้จาก Realtime Database
-                    displayUserInfo(userData);
+                    console.log("ข้อมูลผู้ใช้:", userData);
+                    displayUserInfo(userData, profilePictureUrl);
                     document.querySelector('.container').style.display = 'block';
                 } else {
-                    console.log("ไม่พบข้อมูลใน Realtime Database สำหรับ User ID นี้");  // หากไม่พบข้อมูล
+                    console.log("ไม่พบข้อมูลใน Realtime Database สำหรับ User ID นี้");
                     Swal.fire({
                         icon: 'error',
                         title: 'ไม่พบข้อมูลผู้ใช้',
@@ -251,17 +253,19 @@ async function initializeLiff() {
     }
 }
 
+
 // ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ใน div user-info
-function displayUserInfo(userData) {
+function displayUserInfo(userData, profilePictureUrl) {
     const userInfoDiv = document.querySelector('.user-info');
     
     // อัปเดตข้อมูลใน div ตามข้อมูลที่ได้จาก Realtime Database
-    userInfoDiv.innerHTML = `
+    userInfoDiv.innerHTML = `        
         <p>สวัสดีคุณ : ${userData.fname} ${userData.lname}</p>
         <p>memberCode : ${userData.memberCode}</p>
         <p>ตำแหน่ง : ${userData.jobPosition}</p>
     `;
 }
+
 
 // เรียกใช้ LIFF เมื่อโหลดหน้า
 document.addEventListener('DOMContentLoaded', function() {

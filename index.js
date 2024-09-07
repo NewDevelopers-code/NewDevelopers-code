@@ -208,3 +208,78 @@ document.getElementById('leave-btn').addEventListener('click', function() {
 
 
 // ------------------------------------------------------------------
+
+document.addEventListener('DOMContentLoaded', async function() {
+    await initializeLiff();
+});
+
+async function initializeLiff() {
+    try {
+        // เริ่มต้น LIFF SDK
+        await liff.init({ liffId: "2006013145-q4P949Z6" }); // ใส่ LIFF ID ของคุณ
+
+        // ตรวจสอบว่าได้ล็อกอินแล้วหรือไม่
+        if (!liff.isLoggedIn()) {
+            liff.login(); // ทำการล็อกอินถ้ายังไม่ได้ล็อกอิน
+        } else {
+            // ดึงข้อมูลโปรไฟล์ผู้ใช้
+            const profile = await liff.getProfile();
+            const userId = profile.userId;
+
+            // ตรวจสอบว่ามีการลงทะเบียน userId ใน Firebase หรือไม่
+            checkUserIdInFirebase(userId);
+        }
+    } catch (error) {
+        console.error("Error initializing LIFF:", error);
+        alert("เกิดข้อผิดพลาดในการเริ่มต้น LIFF");
+    }
+}
+
+async function checkUserIdInFirebase(userId) {
+    try {
+        // ค้นหา userId ใน Firestore
+        const userDoc = await db.collection("users").doc(userId).get();
+
+        if (userDoc.exists) {
+            // หาก userId มีการลงทะเบียนในฐานข้อมูล
+            const userData = userDoc.data();
+            console.log("User is registered:", userData);
+
+            // เรียกใช้ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้
+            displayUserInfo(userData);
+
+            // แสดงหน้าเว็บหลัก
+            showMainPage();
+        } else {
+            // หาก userId ไม่มีในฐานข้อมูล
+            Swal.fire({
+                icon: 'error',
+                title: 'ไม่มีการลงทะเบียน',
+                text: 'userId ของคุณไม่ได้ลงทะเบียนในระบบ',
+            });
+        }
+    } catch (error) {
+        console.error("Error checking userId in Firebase:", error);
+        alert("เกิดข้อผิดพลาดในการตรวจสอบ userId ในฐานข้อมูล");
+    }
+}
+
+// ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ใน div user-info
+function displayUserInfo(userData) {
+    const userInfoDiv = document.querySelector('.user-info');
+    
+    // อัปเดตข้อมูลใน div ตามข้อมูลที่ได้จาก Firestore
+    userInfoDiv.innerHTML = `
+        <p>สวัสดีคุณ : ${userData.fname} ${userData.lname}</p>
+        <p>memberCode : ${userData.memberCode}</p>
+        <p>ตำแหน่ง : ${userData.jobPosition}</p>
+    `;
+}
+
+
+
+
+function showMainPage() {
+    document.querySelector('.container').style.display = 'block'; // แสดงหน้าเว็บหลัก
+}
+

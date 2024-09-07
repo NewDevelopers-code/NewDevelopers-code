@@ -255,8 +255,9 @@ async function initializeLiff() {
 
 
 // ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ใน div user-info
-function displayUserInfo(userData) {
+function displayUserInfo(userData, profilePictureUrl) {
     const userInfoDiv = document.querySelector('.user-info');
+    const profileImage = document.getElementById('profile-picture');
     
     // อัปเดตข้อมูลใน div ตามข้อมูลที่ได้จาก Realtime Database
     userInfoDiv.innerHTML = `
@@ -264,16 +265,11 @@ function displayUserInfo(userData) {
         <p>memberCode : ${userData.memberCode}</p>
         <p>ตำแหน่ง : ${userData.jobPosition}</p>
     `;
+
+    // อัปเดตรูปโปรไฟล์
+    profileImage.src = profilePictureUrl;
 }
-// ฟังก์ชันเพื่อแสดงข้อมูลผู้ใช้ใน div user-info
-function displayUserInfo(profilePictureUrl) {
-    const userInfoDiv = document.querySelector('.profile-image');
-    
-    // อัปเดตข้อมูลใน div ตามข้อมูลที่ได้จาก Realtime Database
-    userInfoDiv.innerHTML = `
-        <img src="${profilePictureUrl}" alt="Profile Picture" style="width: 100px; height: 100px; border-radius: 50%;">
-    `;
-}
+
 
 
 // เรียกใช้ LIFF เมื่อโหลดหน้า

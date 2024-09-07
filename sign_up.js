@@ -31,30 +31,43 @@ function showContent() {
     }
 }
 
-function submitForm() {
-    var userId = document.getElementById('UserId').value;
-    var fname = document.getElementById('fname').value;
-    var lname = document.getElementById('lname').value;
-    var password = document.getElementById('password').value;
+// -----------------------------ส่วนของการบันทึกข้อมูล---------------------------------------//
 
-    fetch('https://script.google.com/macros/s/AKfycbyhkWdsQM6eqv8FY4MQwaMl1VB3SmguyQn85E5Mq9Ay8a3ksyxEwuXIrwuv2hg84D86/exec', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        UserId: userId,
-        fname: fname,
-        lname: lname,
-        password: password
-      })
-    })
-    .then(response => response.text())
-    .then(data => {
-      alert(data); // แสดงข้อความตอบกลับ
-      document.getElementById('myForm').reset(); // ล้างฟอร์ม
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+// ฟังก์ชันสร้างรหัสสมาชิกอัตโนมัติ
+function generateMemberCode(currentYear, totalUsers) {
+  return `${currentYear}${totalUsers.toString().padStart(4, '0')}`;
+}
+
+async function submitForm() {
+  // รับข้อมูลจากฟอร์ม
+  const userId = document.getElementById('UserId').value;
+  const fname = document.getElementById('fname').value;
+  const lname = document.getElementById('lname').value;
+
+  // รับวันที่และเวลา
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const timestamp = currentDate.toISOString();
+
+  try {
+      // นับจำนวนสมาชิกที่มีใน Firestore เพื่อสร้างรหัสสมาชิก
+      const snapshot = await db.collection('users').get();
+      const totalUsers = snapshot.size + 1;
+
+      // สร้างรหัสสมาชิก
+      const memberCode = generateMemberCode(currentYear, totalUsers);
+
+      // บันทึกข้อมูลลง Firestore
+      await db.collection('users').add({
+          date: timestamp,
+          userId: userId,
+          fname: fname,
+          lname: lname,
+          memberCode: memberCode
+      });
+
+      alert('บันทึกข้อมูลสำเร็จ');
+  } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
   }
+}

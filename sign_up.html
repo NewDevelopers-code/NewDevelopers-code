@@ -6,9 +6,12 @@
     <title>Document</title>
     <link rel="stylesheet" href="./css/sign_up.css">
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
 </head>
 <body>
-    <div class="container" style="display: none;"> <!-- ซ่อน container -->
+    <!-- เนื้อหาเดิมของคุณ -->
+    <div class="container" style="display: none;">
         <div class="image">
             <img class="profile-image" src="https://www.colliers.com/-/media/images/colliers/asia/philippines/colliers-review/collierreview_hero_image_01312022_v2/hero_image_tondominium/hero_image_021522/hero_image_colliersviewpoint_022222.ashx?bid=0f5b3ed2a8de41f89e1a8d557e48f9f8&w=747&hash=0FC8E3209597476C90DAEE09EFE172AE" alt="Profile Image">
         </div>
@@ -16,23 +19,38 @@
             <p>ยินดีต้อนรับสู่ระบบบันทึกเวลาทำงาน</p>            
         </div>
         <div class="container-form">
-                <form id="myForm">
-                    <label for="UserId">ID</label>
-                    <input type="text" id="UserId" name="UserId" value="userId" readonly>
+            <form id="myForm">
+                <label for="UserId">ID</label>
+                <input type="text" id="UserId" name="UserId" value="userId" readonly>
+            
+                <label for="fname">ชื่อ</label>
+                <input type="text" id="fname" name="fname">
+            
+                <label for="lname">นามสกุล</label>
+                <input type="text" id="lname" name="lname">
                 
-                    <label for="fname">ชื่อ</label>
-                    <input type="text" id="fname" name="fname">
-                
-                    <label for="lname">นามสกุล</label>
-                    <input type="text" id="lname" name="lname">
-                
-                    <label for="password">รหัสผ่าน</label>
-                    <input type="password" id="password" name="password">
-                
-                    <input type="button" value="Submit" onclick="submitForm()">
-                </form>
+                <input type="button" value="Submit" onclick="submitForm()">
+            </form>
         </div>       
     </div>
+
     <script src="./sign_up.js"></script>
+
+    <script>
+        // ตั้งค่า Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZB4jmbhWHTQbk7FiDtu3q-cE1ryByvTA",
+            authDomain: "timeinout-310f0.firebaseapp.com",
+            projectId: "timeinout-310f0",
+            storageBucket: "timeinout-310f0.appspot.com",
+            messagingSenderId: "756973933115",
+            appId: "1:756973933115:web:34344b10d3ee05279e421e",
+            measurementId: "G-7Z0B2DDQN9"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
 </body>
 </html>

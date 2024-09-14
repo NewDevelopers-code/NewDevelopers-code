@@ -170,6 +170,13 @@ function showContainer2() {
 }
 
 
+// ฟังก์ชันสำหรับตรวจสอบว่าอุปกรณ์เป็นมือถือหรือแท็บเล็ตรึเปล่า
+function isMobileOrTablet() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    // ตรวจสอบการเป็นอุปกรณ์มือถือหรือแท็บเล็ต
+    return /android|ipad|iphone|ipod/i.test(userAgent);
+}
+
 // ฟังก์ชันสำหรับเปิดกล้อง
 function openCamera() {
     const video = document.createElement('video');
@@ -181,17 +188,25 @@ function openCamera() {
     document.querySelector('.image-container').appendChild(video);
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true })
+        const constraints = {
+            video: {
+                facingMode: isMobileOrTablet() ? 'user' : 'environment' // ใช้กล้องหน้าเฉพาะในมือถือหรือแท็บเล็ต
+            }
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints)
             .then(function (stream) {
                 video.srcObject = stream;
             })
             .catch(function (error) {
                 console.error("Error accessing camera: ", error);
+                alert("ไม่สามารถเข้าถึงกล้องได้");
             });
     } else {
         alert("อุปกรณ์นี้ไม่รองรับการเปิดใช้งานกล้อง");
     }
 }
+
 
 // ฟังก์ชันสำหรับการถ่ายรูป
 function captureImage() {

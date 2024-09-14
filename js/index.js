@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     if (userId) {
         try {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Set เวลาเป็น 00:00:00 เพื่อเปรียบเทียบเฉพาะวันที่
+
             // ตรวจสอบเวลาเข้างาน
             const checkInRef = db.collection('records')
                 .where('userId', '==', userId)
@@ -40,16 +43,19 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             if (!checkInSnapshot.empty) {
                 const lastCheckIn = checkInSnapshot.docs[0].data();
-                const checkInTime = lastCheckIn.timestamp;
+                const checkInTime = lastCheckIn.timestamp.toDate(); // assuming timestamp is a Firestore Timestamp object
 
                 // แสดงเวลาเข้างานใน <span>
                 document.getElementById('check-in-time').innerText = `เข้างานแล้วเมื่อเวลา: ${checkInTime}`;
 
-                // ปิดการใช้งานปุ่มเข้างาน
-                const checkInButton = document.getElementById('check-in-btn');
-                checkInButton.disabled = true;
-                checkInButton.style.cursor = 'not-allowed';
-                checkInButton.style.opacity = 0.5;
+                // เปรียบเทียบวันที่
+                if (checkInTime.setHours(0, 0, 0, 0) === today.getTime()) {
+                    // ปิดการใช้งานปุ่มเข้างานถ้าเป็นวันเดียวกัน
+                    const checkInButton = document.getElementById('check-in-btn');
+                    checkInButton.disabled = true;
+                    checkInButton.style.cursor = 'not-allowed';
+                    checkInButton.style.opacity = 0.5;
+                }
             }
 
             // ตรวจสอบเวลาออกงาน
@@ -62,16 +68,19 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             if (!checkOutSnapshot.empty) {
                 const lastCheckOut = checkOutSnapshot.docs[0].data();
-                const checkOutTime = lastCheckOut.timestamp;
+                const checkOutTime = lastCheckOut.timestamp.toDate(); // assuming timestamp is a Firestore Timestamp object
 
                 // แสดงเวลาออกงานใน <span>
                 document.getElementById('check-out-time').innerText = `ออกงานแล้วเมื่อเวลา: ${checkOutTime}`;
 
-                // ปิดการใช้งานปุ่มออกงาน
-                const checkOutButton = document.getElementById('check-out-btn');
-                checkOutButton.disabled = true;
-                checkOutButton.style.cursor = 'not-allowed';
-                checkOutButton.style.opacity = 0.5;
+                // เปรียบเทียบวันที่
+                if (checkOutTime.setHours(0, 0, 0, 0) === today.getTime()) {
+                    // ปิดการใช้งานปุ่มออกงานถ้าเป็นวันเดียวกัน
+                    const checkOutButton = document.getElementById('check-out-btn');
+                    checkOutButton.disabled = true;
+                    checkOutButton.style.cursor = 'not-allowed';
+                    checkOutButton.style.opacity = 0.5;
+                }
             }
 
             // ผูกฟังก์ชันกับปุ่ม
@@ -97,6 +106,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         alert("ไม่สามารถกำหนด User ID");
     }
 });
+
 
 
 

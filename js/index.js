@@ -55,8 +55,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
 
                 if (checkInTime) {
+                    // แปลงวันที่เป็นรูปแบบ DD/MM/YYYY
+                    const formattedCheckInTime = checkInTime.toLocaleDateString('th-TH', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+
                     // แสดงเวลาเข้างานใน <span>
-                    document.getElementById('check-in-time').innerText = `เข้างานแล้วเมื่อเวลา: ${checkInTime}`;
+                    document.getElementById('check-in-time').innerText = `เข้างานแล้วเมื่อวันที่: ${formattedCheckInTime}`;
 
                     // เปรียบเทียบวันที่
                     if (checkInTime.setHours(0, 0, 0, 0) === today.getTime()) {
@@ -91,8 +98,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
 
                 if (checkOutTime) {
+                    // แปลงวันที่เป็นรูปแบบ DD/MM/YYYY
+                    const formattedCheckOutTime = checkOutTime.toLocaleDateString('th-TH', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+
                     // แสดงเวลาออกงานใน <span>
-                    document.getElementById('check-out-time').innerText = `ออกงานแล้วเมื่อเวลา: ${checkOutTime}`;
+                    document.getElementById('check-out-time').innerText = `ออกงานแล้วเมื่อวันที่: ${formattedCheckOutTime}`;
 
                     // เปรียบเทียบวันที่
                     if (checkOutTime.setHours(0, 0, 0, 0) === today.getTime()) {

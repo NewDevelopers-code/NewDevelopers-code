@@ -43,18 +43,29 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             if (!checkInSnapshot.empty) {
                 const lastCheckIn = checkInSnapshot.docs[0].data();
-                const checkInTime = lastCheckIn.timestamp.toDate(); // assuming timestamp is a Firestore Timestamp object
+                let checkInTime;
 
-                // แสดงเวลาเข้างานใน <span>
-                document.getElementById('check-in-time').innerText = `เข้างานแล้วเมื่อเวลา: ${checkInTime}`;
+                // ตรวจสอบประเภทของ timestamp และจัดการตามความเหมาะสม
+                if (lastCheckIn.timestamp && typeof lastCheckIn.timestamp.toDate === 'function') {
+                    checkInTime = lastCheckIn.timestamp.toDate();
+                } else if (typeof lastCheckIn.timestamp === 'string' || typeof lastCheckIn.timestamp === 'number') {
+                    checkInTime = new Date(lastCheckIn.timestamp);
+                } else {
+                    console.error("Invalid or missing timestamp for check-in:", lastCheckIn.timestamp);
+                }
 
-                // เปรียบเทียบวันที่
-                if (checkInTime.setHours(0, 0, 0, 0) === today.getTime()) {
-                    // ปิดการใช้งานปุ่มเข้างานถ้าเป็นวันเดียวกัน
-                    const checkInButton = document.getElementById('check-in-btn');
-                    checkInButton.disabled = true;
-                    checkInButton.style.cursor = 'not-allowed';
-                    checkInButton.style.opacity = 0.5;
+                if (checkInTime) {
+                    // แสดงเวลาเข้างานใน <span>
+                    document.getElementById('check-in-time').innerText = `เข้างานแล้วเมื่อเวลา: ${checkInTime}`;
+
+                    // เปรียบเทียบวันที่
+                    if (checkInTime.setHours(0, 0, 0, 0) === today.getTime()) {
+                        // ปิดการใช้งานปุ่มเข้างานถ้าเป็นวันเดียวกัน
+                        const checkInButton = document.getElementById('check-in-btn');
+                        checkInButton.disabled = true;
+                        checkInButton.style.cursor = 'not-allowed';
+                        checkInButton.style.opacity = 0.5;
+                    }
                 }
             }
 
@@ -68,18 +79,29 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             if (!checkOutSnapshot.empty) {
                 const lastCheckOut = checkOutSnapshot.docs[0].data();
-                const checkOutTime = lastCheckOut.timestamp.toDate(); // assuming timestamp is a Firestore Timestamp object
+                let checkOutTime;
 
-                // แสดงเวลาออกงานใน <span>
-                document.getElementById('check-out-time').innerText = `ออกงานแล้วเมื่อเวลา: ${checkOutTime}`;
+                // ตรวจสอบประเภทของ timestamp และจัดการตามความเหมาะสม
+                if (lastCheckOut.timestamp && typeof lastCheckOut.timestamp.toDate === 'function') {
+                    checkOutTime = lastCheckOut.timestamp.toDate();
+                } else if (typeof lastCheckOut.timestamp === 'string' || typeof lastCheckOut.timestamp === 'number') {
+                    checkOutTime = new Date(lastCheckOut.timestamp);
+                } else {
+                    console.error("Invalid or missing timestamp for check-out:", lastCheckOut.timestamp);
+                }
 
-                // เปรียบเทียบวันที่
-                if (checkOutTime.setHours(0, 0, 0, 0) === today.getTime()) {
-                    // ปิดการใช้งานปุ่มออกงานถ้าเป็นวันเดียวกัน
-                    const checkOutButton = document.getElementById('check-out-btn');
-                    checkOutButton.disabled = true;
-                    checkOutButton.style.cursor = 'not-allowed';
-                    checkOutButton.style.opacity = 0.5;
+                if (checkOutTime) {
+                    // แสดงเวลาออกงานใน <span>
+                    document.getElementById('check-out-time').innerText = `ออกงานแล้วเมื่อเวลา: ${checkOutTime}`;
+
+                    // เปรียบเทียบวันที่
+                    if (checkOutTime.setHours(0, 0, 0, 0) === today.getTime()) {
+                        // ปิดการใช้งานปุ่มออกงานถ้าเป็นวันเดียวกัน
+                        const checkOutButton = document.getElementById('check-out-btn');
+                        checkOutButton.disabled = true;
+                        checkOutButton.style.cursor = 'not-allowed';
+                        checkOutButton.style.opacity = 0.5;
+                    }
                 }
             }
 

@@ -56,14 +56,21 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 if (checkInTime) {
                     // แปลงวันที่เป็นรูปแบบ DD/MM/YYYY
-                    const formattedCheckInTime = checkInTime.toLocaleDateString('th-TH', {
+                    const formattedCheckInDate = checkInTime.toLocaleDateString('th-TH', {
                         day: '2-digit',
                         month: '2-digit',
                         year: 'numeric'
                     });
 
+                    // แปลงเวลาเป็นรูปแบบ HH:MM โดยไม่แสดงโซนเวลา
+                    const formattedCheckInTime = checkInTime.toLocaleTimeString('th-TH', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false // แสดงเวลาในรูปแบบ 24 ชั่วโมง
+                    });
+
                     // แสดงเวลาเข้างานใน <span>
-                    document.getElementById('check-in-time').innerText = `เข้างานแล้วเมื่อวันที่: ${formattedCheckInTime}`;
+                    document.getElementById('check-in-time').innerText = `เข้างานแล้วเมื่อวันที่: ${formattedCheckInDate} เวลา: ${formattedCheckInTime}`;
 
                     // เปรียบเทียบวันที่
                     if (checkInTime.setHours(0, 0, 0, 0) === today.getTime()) {
@@ -99,14 +106,21 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 if (checkOutTime) {
                     // แปลงวันที่เป็นรูปแบบ DD/MM/YYYY
-                    const formattedCheckOutTime = checkOutTime.toLocaleDateString('th-TH', {
+                    const formattedCheckOutDate = checkOutTime.toLocaleDateString('th-TH', {
                         day: '2-digit',
                         month: '2-digit',
                         year: 'numeric'
                     });
 
+                    // แปลงเวลาเป็นรูปแบบ HH:MM โดยไม่แสดงโซนเวลา
+                    const formattedCheckOutTime = checkOutTime.toLocaleTimeString('th-TH', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false // แสดงเวลาในรูปแบบ 24 ชั่วโมง
+                    });
+
                     // แสดงเวลาออกงานใน <span>
-                    document.getElementById('check-out-time').innerText = `ออกงานแล้วเมื่อวันที่: ${formattedCheckOutTime}`;
+                    document.getElementById('check-out-time').innerText = `ออกงานแล้วเมื่อวันที่: ${formattedCheckOutDate} เวลา: ${formattedCheckOutTime}`;
 
                     // เปรียบเทียบวันที่
                     if (checkOutTime.setHours(0, 0, 0, 0) === today.getTime()) {

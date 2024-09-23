@@ -3,57 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สร้าง QR Code PromptPay</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>Generate PromptPay QR Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        form {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 400px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #qr-code {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h2>สร้าง QR Code PromptPay สำหรับรับเงิน</h2>
 
-    <label for="amount">จำนวนเงิน (บาท):</label>
-    <input type="number" id="amount" placeholder="เช่น 100.00"><br><br>
-
-    <button onclick="generateQRCode()">สร้าง QR Code</button>
-
-    <div id="qrcode" style="display: none;"></div>
-    <br>
-    <img id="qrcodeImage" alt="QR Code จะปรากฏที่นี่">
+    <h1>PromptPay QR Code Generator</h1>
     
+    <form id="promptpay-form">
+        <label for="promptpay-id">PromptPay ID (Phone/ID)</label>
+        <input type="text" id="promptpay-id" placeholder="ใส่เบอร์โทรหรือเลขบัตรประชาชน" required>
+
+        <label for="amount">จำนวนเงิน (บาท)</label>
+        <input type="number" id="amount" placeholder="ใส่จำนวนเงิน" required>
+
+        <button type="submit">Generate QR Code</button>
+    </form>
+
+    <div id="qr-code"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script>
-        const promptpayId = '0834340341'; // เปลี่ยนเป็นหมายเลขโทรศัพท์ของคุณ
+        function generatePromptPayQR(promptpayID, amount) {
+            const payloadFormatIndicator = "000201";
+            const pointOfInitiationMethod = "010211";
+            const merchantAccountInfo = `29370016A000000677010111${promptpayID.length === 13 ? '02' : '01'}${promptpayID.length}${promptpayID}`;
+            const transactionCurrency = "5303764";
+            const transactionAmount = `54${String(amount).length < 10 ? '0' + String(amount).length : String(amount).length}${amount}`;
+            const countryCode = "5802TH";
+            const crc = "6304"; // Placeholder for CRC calculation (you would need a proper CRC-16 algorithm for real use)
 
-        function generateQRCode() {
-            var amount = parseFloat(document.getElementById("amount").value);
-            if (!amount || amount <= 0) {
-                alert("กรุณากรอกจำนวนเงินให้ถูกต้อง");
-                return;
+            // สร้างข้อมูลสำหรับ QR
+            return payloadFormatIndicator + pointOfInitiationMethod + merchantAccountInfo + transactionCurrency + transactionAmount + countryCode + crc;
+        }
+
+        document.getElementById('promptpay-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const promptpayID = document.getElementById('promptpay-id').value.trim();
+            const amount = document.getElementById('amount').value.trim();
+
+            if (promptpayID && amount) {
+                const qrData = generatePromptPayQR(promptpayID, amount);
+                
+                const qr = new QRious({
+                    element: document.getElementById('qr-code'),
+                    value: qrData,
+                    size: 300
+                });
             }
-
-            // รูปแบบ PromptPay สำหรับหมายเลขโทรศัพท์
-            var promptpayPayload = createPromptPayQR(promptpayId, amount);
-            
-            var qrCode = new QRCode(document.getElementById("qrcode"), {
-                text: promptpayPayload,
-                width: 256,
-                height: 256
-            });
-
-            // แปลง QR Code เป็น Base64
-            var canvas = document.querySelector("canvas");
-            var base64Image = canvas.toDataURL("image/png");
-
-            // แสดง QR Code ที่เป็น Base64
-            document.getElementById("qrcodeImage").src = base64Image;
-        }
-
-        // ฟังก์ชันสำหรับสร้างข้อมูล QR ของ PromptPay
-        function createPromptPayQR(phone, amount) {
-            phone = phone.replace(/[^0-9]/g, '');  // ลบตัวอักษรที่ไม่ใช่หมายเลข
-            if (phone.length === 10) phone = '0066' + phone.substring(1);  // แปลงเลขไทยเป็นฟอร์แมตสากล
-
-            // สร้างฟอร์แมต QR Code ตาม PromptPay
-            var qrData = `00020101021129370016A00000067701011101130066${phone}5802TH5303764${amount.toFixed(2).replace('.', '')}6304`;
-            return qrData;
-        }
+        });
     </script>
+
 </body>
 </html>

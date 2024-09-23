@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สร้าง QR Code PromptPay</title>
+    <script src="https://cdn.jsdelivr.net/npm/promptpay-qr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <h2>สร้าง QR Code PromptPay สำหรับรับเงิน</h2>
+
+    <!-- กรอกจำนวนเงิน -->
+    <label for="amount">จำนวนเงิน (บาท):</label>
+    <input type="number" id="amount" placeholder="เช่น 100.00"><br><br>
+
+    <button onclick="generateQRCode()">สร้าง QR Code</button>
+
+    <div id="qrcode"></div>
+    <br>
+    <img id="qrcodeImage" alt="QR Code จะปรากฏที่นี่">
+    
+    <script>
+        // กำหนดหมายเลขโทรศัพท์ PromptPay ไว้ล่วงหน้า
+        const promptpayId = '0834340341'; // เปลี่ยนเป็นหมายเลขโทรศัพท์ของคุณ
+
+        function generateQRCode() {
+            var amount = parseFloat(document.getElementById("amount").value);
+
+            // ตรวจสอบว่ากรอกจำนวนเงินแล้วหรือยัง
+            if (!amount || amount <= 0) {
+                alert("กรุณากรอกจำนวนเงินให้ถูกต้อง");
+                return;
+            }
+
+            // สร้างข้อมูล PromptPay QR Code
+            var qrData = PromptPay.generate({
+                type: 'phone',  // ประเภทหมายเลขที่ใช้ (phone, id, หรือ ewallet)
+                id: promptpayId,  // หมายเลขโทรศัพท์
+                amount: amount  // จำนวนเงิน
+            });
+
+            // สร้าง QR Code จากข้อมูล
+            var qrCode = new QRCode(document.getElementById("qrcode"), {
+                text: qrData,
+                width: 256,
+                height: 256
+            });
+
+            // แปลง QR Code เป็น Base64
+            var canvas = document.querySelector("canvas");
+            var base64Image = canvas.toDataURL("image/png");
+
+            // แสดง QR Code ที่เป็น Base64
+            document.getElementById("qrcodeImage").src = base64Image;
+        }
+    </script>
+</body>
+</html>
